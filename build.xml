@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="deploy" name="Google - deploy" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<property environment="env" />
+	<property file="build.properties" />
+	<property name="src.dir" value="src"></property>
+	<property name="resources.dir" value="resources"></property>
+	<property name="test.dir" value="test"></property>
+	<property name="basedir" value="."></property>
+	<property name="build.dir" value="build"></property>
+	<property name="build.classes" value="${build.dir}/classes"></property>
+	<property name="build.lib" value="${build.dir}/lib"></property>
+	<property name="lib.dir" value="${basedir}/WebContent/WEB-INF/lib"></property>
+	<property name="webinfo.dir" value="${basedir}/WebContent/WEB-INF"></property>
+	<property name="webContent.dir" value="${basedir}/WebContent/"></property>
+	<property name="build.test.dir" location="${build.dir}/test"></property>
+	<property name="build.test.classes" location="${build.test.dir}/classes"></property>
+	<property name="build.test.report" location="${build.test.dir}/report"></property>
+	<property name="run.test.class" value="**/Test*.class"></property>
+	<path id="compile-path">
+		<pathelement path="${java.home}/lib/tools.jar" />
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+	<path id="compile-test-path">
+	  <path refid="compile-path"></path>
+	  <pathelement location="${build.classes}"/>
+	</path>
+	 
+	<path id="run-test-path">
+	  <path refid="compile-test-path"></path>
+	  <pathelement location="${build.test.classes}"/>
+	</path>
+
+	<target name="init">
+		<delete dir="${build.dir}" failonerror="false">
+		</delete>
+		<mkdir dir="${build.dir}">
+		</mkdir>
+		<mkdir dir="${build.classes}" />
+		<mkdir dir="${build.lib}" />
+		<mkdir dir="${build.test.dir}"/>
+		<mkdir dir="${build.test.classes}"/>
+		<mkdir dir="${build.test.report}"/>
+
+	</target>
+	<target name="copy" depends="init">
+		<copy todir="${build.lib}">
+			<fileset dir="${lib.dir}" includes="**/*.jar">
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="compile-web" depends="copy">
+		<compile module="/" />
+	</target>
+
+	<macrodef name="compile">
+		<attribute name="module" />
+		<element name="options" optional="yes" />
+
+		<sequential>
+			<echo>Compiling @{module}...</echo>
+			<mkdir dir="${build.dir}/classes/@{module}" />
+			<javac srcdir="${src.dir}/@{module}" destdir="${build.dir}/classes/@{module}" debug="${compile.debug}" deprecation="${compile.deprecation}" optimize="${compile.optimize}" includeAntRuntime="false" classpathref="compile-path">
+				<options />
+			</javac>
+			<echo>Done</echo>
+		</sequential>
+	</macrodef>
+
+	<target name="copy-config-files" depends="compile-web">
+		<copy todir="${build.classes}">
+			<fileset dir="${resources.dir}">
+				<include name="**/*.xml" />
+				<include name="**/*.properties" />
+			</fileset>
+			<fileset dir="${webinfo.dir}" excludes="classes/*">
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="compile-test" depends="compile-web">
+	  <echo>Compilinh test classes...</echo>
+	  <javac failonerror="true" includeantruntime="true" srcdir="${test.dir}" destdir="${build.test.classes}" classpathref="compile-test-path"/>
+	 </target>
+	
+	
+	<target name="deploy" depends="copy-config-files" description="Deploy web project">
+		<echo message="---->deploy project....">
+		</echo>
+		<mkdir dir="${tomcat.home}/${apps.dir}" />
+		<copy todir="${tomcat.home}/${apps.dir}">
+			<fileset dir="${webContent.dir}">
+			</fileset>
+		</copy>
+		<copy todir="${tomcat.home}/${apps.dir}/WEB-INF/classes">
+			<fileset dir="${src.dir}" includes="*.xml">
+			</fileset>
+			<fileset dir="${src.dir}" includes="*.properties">
+			</fileset>
+		</copy>
+		<echo>Dist ${apps.dir} to ${tomcat.home} successfully!</echo>
+	</target>
+	
+	<target name="run-test" depends="compile-test">
+	  <echo>Run the junit test report</echo>
+	  <junit printsummary="false" haltonfailure="false">
+	   <classpath refid="run-test-path"></classpath>
+	   <formatter type="brief" usefile="false"/>
+	   <formatter type="xml"/>
+	   <batchtest todir="${build.test.report}">
+	    <fileset dir="${build.test.classes}" includes="${run.test.class}"></fileset>
+	   </batchtest>
+	  </junit>
+	  <junitreport todir="${build.test.report}">
+	   <fileset dir="${build.test.report}" includes="TEST-*.xml"></fileset>
+	   <report format="frames" todir="${build.test.report}/html"/>
+	  </junitreport>
+	 </target>
+	
+	<!-- <target name="build-models" depends="compile-web">
+	 	<echo>Start to build the models...</echo>
+	        <java classname="com.augmentum.google.util.GenerateBuilderUtil" classpathref="compile-test-path" fork="true" maxmemory="256m" newenvironment="true">
+	        </java>
+	 </target>-->
+	<ivy:retrieve file="ivy.xml" sync="true" /> 
+</project>

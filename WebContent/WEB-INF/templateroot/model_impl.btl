@@ -1,0 +1,48 @@
+package com.augmentum.google.generate.model;
+
+public class ${model.name}Impl {
+    private static ${model.name}Impl instance = new ${model.name}Impl();
+	private ${model.name}Impl(){}    
+    <%for(finder in model.finders){
+         var returnType = (0 == finder.returnType) ? model.name : ('java.util.List<'+ model.name + '>');
+    %>
+    public ${returnType} findBy${finder.finderName}(
+      <%for(attr in finder.finderAttrs){%>
+      ${attr.type} ${attr.name}
+      <%if(!attrLP.last){%>
+        ,
+      <%}}%>
+     ){
+       StringBuilder sBuilder = new StringBuilder("SELECT * FROM ${model.tableName} WHERE ");
+            <%for(attrV in finder.finderAttrs){%>
+                  sBuilder.append("${attrV.name} = ? ");
+                  <%if(!attrVLP.last){%>
+                       sBuilder.append(" AND ");
+            <%}}%>
+            <%if(0 == finder.returnType){%>
+        ${model.name} entity = ${model.name}.dao.findFirst(sBuilder.toString(),
+             <%for(attrS in finder.finderAttrs){%>
+                  ${attrS.name}
+                  <%if(!attrSLP.last){%>
+                   ,
+            <%}}%>
+        );
+         return entity;
+       <%}else{%>
+         ${returnType} entities = ${model.name}.dao.find(sBuilder.toString(),
+             <%for(attrT in finder.finderAttrs){%>
+                  ${attrT.name}
+                  <%if(!attrTLP.last){%>
+                   ,
+            <%}}%>
+        );
+         return entities;
+        <%}%>
+    }
+	<%}%>
+	
+	public static ${model.name}Impl getDAO(){
+		return instance;
+	}
+}
+

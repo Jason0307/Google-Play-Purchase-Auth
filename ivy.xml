@@ -1,0 +1,7 @@
+<?xml version="1.0"?>  
+<ivy-module version="2.0">  
+    <info organisation="junitbook" module="sampling-ivy"/>  
+    <dependencies>  
+        <!-- <dependency org="junit" name="junit" rev="4.11"/>   -->
+    </dependencies>  
+</ivy-module>

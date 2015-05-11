@@ -1,0 +1,21 @@
+package com.augmentum.google.generate.model;
+
+import com.jfinal.ext.plugin.tablebind.TableBind;
+import java.util.List;
+import java.util.ArrayList;
+import com.augmentum.google.generate.base.BaseModel;
+
+@TableBind(tableName = "${model.tableName}", pkName = "${model.pkName}")
+public class ${model.name} extends BaseModel<${model.name}>{
+    private static final long serialVersionUID = 1L;
+    public static ${model.name} dao = new ${model.name}();
+    
+    @Override
+	public List<String> showAttrs() {
+	    List<String> showAttrs = new ArrayList<String>();
+ 		<%for(attr in model.attrs){%>
+		showAttrs.add("${attr.name}");
+		<%}%>
+		return showAttrs;
+	}
+}

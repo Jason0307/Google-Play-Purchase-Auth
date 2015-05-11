@@ -1,0 +1,71 @@
+
+@charset "utf-8";
+@import "http://www.w3cplus.com/download/reset.css";
+@font-face {
+	font-family : "weston" ; 
+	src : url("fonts/WestonFree.otf") ; 
+	} 
+.page {
+    padding-top: 40px;
+    text-align: left;
+}
+.wrap_top_nav {
+    background-color: #333333;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+    height: 40px;
+}
+#top_nav {
+    margin: 0 auto;
+    position: relative;
+    width: 1000px;
+}
+#top_nav a {
+    color: #999999;
+    float: left;
+    font-size: 16px;
+    line-height: 40px;
+    margin-right: 20px;
+    text-decoration: none;
+}
+#top_nav a:hover {
+    color: #FFFFFF;
+}
+#top_nav li:nth-child(1) a {
+    background-image: url("http://www.w3cplus.com/sites/all/themes/marvin/logo.png");
+    background-position: 0 -12px;
+    background-repeat: no-repeat;
+    background-size: 68px 60px;
+    color: #FFFFFF;
+    overflow: hidden;
+    padding-left: 74px;
+    width: 74px;
+}
+#read {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+#header {
+    text-align: center;
+}
+#header .white {
+    color: #FFFFFF;
+}
+#header .blank {
+    color: #444444;
+}
+#header h1 {
+	 font-family: 'weston';
+    font-size: 24px;
+}
+#header h2 {
+    font-weight: normal;
+}
+#ad_w3cplus {
+    margin: 100px auto;
+    text-align: center;
+    width: 750px;
+}
+#ad_w3cplus .grid-ad {
+    float: left;
+}

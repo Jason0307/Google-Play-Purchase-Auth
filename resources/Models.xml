@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE Models SYSTEM "Model.dtd" >
+<Models db="google_auth" package="com.augmentum.google.generate.model">
+	<Model tableName="Game" name="Game">
+		<Attr name="gameId" type="Long" pk="true"></Attr>
+		<Attr name="gameName" type="String"></Attr>
+		<Attr name="createdDate" type="Date"></Attr>
+		<Finder name="GameName" return_type="Game">
+			<FinderAttr name="gameName"></FinderAttr>
+		</Finder>
+	</Model>
+</Models>
